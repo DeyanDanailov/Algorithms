@@ -5,48 +5,47 @@ namespace EightQueens
 {
     public class StartUp
     {
-        private const int boardSize = 8;
-        static int[,] board = new int[boardSize, boardSize];
+       
         static HashSet<int> attackedRows = new HashSet<int>();
         static HashSet<int> attackedCols = new HashSet<int>();
 
-        static void TryPutQueen(int row)
+        static void TryPutQueen(int row, int boardSize, int[,] board)
         {
             if (row == boardSize)
             {
-                PrintBoard(board);
+                PrintBoard(board, boardSize);
                 return;
             }
             else
             {
                 for (int col = 0; col < boardSize; col++)
                 {
-                    if (CanPlaceQueen(row, col))
+                    if (CanPlaceQueen(row, col, boardSize, board))
                     {
-                        MarkAttackedFields(row, col);
-                        TryPutQueen(row + 1);
-                        UnmarkAttackedFields(row, col);
+                        MarkAttackedFields(row, col, board);
+                        TryPutQueen(row + 1, boardSize, board);
+                        UnmarkAttackedFields(row, col, board);
                     }
 
                 }
             }
         }
 
-        private static void UnmarkAttackedFields(int row, int col)
+        private static void UnmarkAttackedFields(int row, int col, int[,] board)
         {
             board[row, col] = 0;
             attackedRows.Remove(row);
             attackedCols.Remove(col);
         }
 
-        private static void MarkAttackedFields(int row, int col)
+        private static void MarkAttackedFields(int row, int col, int[,] board)
         {
             board[row, col] = 1;
             attackedRows.Add(row);
             attackedCols.Add(col);
         }
 
-        private static bool CanPlaceQueen(int row, int col)
+        private static bool CanPlaceQueen(int row, int col, int boardSize, int[,] board)
         {
             if (attackedRows.Contains(row))
             {
@@ -91,7 +90,7 @@ namespace EightQueens
             return true;
         }
 
-        private static void PrintBoard(int[,] board)
+        private static void PrintBoard(int[,] board, int boardSize)
         {
             for (int i = 0; i < boardSize; i++)
             {
@@ -108,12 +107,14 @@ namespace EightQueens
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine("-------------------------");
+            Console.WriteLine("-----------------------");
         }
 
         static void Main(string[] args)
         {
-            TryPutQueen(0);
+            var boardSize = int.Parse(Console.ReadLine());
+            int[,] board = new int[boardSize, boardSize];
+            TryPutQueen(0, boardSize, board);
 
         }
     }
